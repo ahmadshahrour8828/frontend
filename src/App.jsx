@@ -73,7 +73,7 @@ export default function App() {
     try {
       setApiPodError("");
 
-      const res = await fetch(`${base}/api-info`);
+      const res = await fetch(`${base}/info`);
 
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
