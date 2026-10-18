@@ -29,7 +29,7 @@ spec:
       containers:
         - name: frontend
           imagePullPolicy: Always
-          image: 715489363281.dkr.ecr.eu-central-1.amazonaws.com/frontend:b2c9245ad290ae54dcdd8faa88d925e7aa89059c
+          image: 715489363281.dkr.ecr.eu-central-1.amazonaws.com/frontend:d0a282bcc128bd5b0aaa6794570d2497bf270ed1
           ports:
             - containerPort: 80
               name: http
