@@ -25,6 +25,9 @@ export default function App() {
   const [healthStatus, setHealthStatus] = useState({ state: "pending", text: "Health: checking…" });
   const [readyStatus, setReadyStatus] = useState({ state: "pending", text: "DB: checking…" });
 
+  const [apiPod, setApiPod] = useState(null);
+  const [apiPodError, setApiPodError] = useState("");
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [titleInvalid, setTitleInvalid] = useState(false);
@@ -41,6 +44,7 @@ export default function App() {
   const [pendingDelete, setPendingDelete] = useState(null);
 
   const titleInputRef = useRef(null);
+
 
   function getApiBase() {
     return apiBase;
@@ -63,6 +67,23 @@ export default function App() {
         setToasts((prev) => prev.filter((t) => t.id !== id));
       }, 220);
     }, 3200);
+  }
+
+  async function loadApiPodInfo(base = apiBase) {
+    try {
+      setApiPodError("");
+
+      const res = await fetch(`${base}/api-info`);
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      setApiPod(await res.json());
+    } catch {
+      setApiPod(null);
+      setApiPodError("Unable to load API pod information");
+    }
   }
 
   async function checkHealth(base) {
@@ -129,6 +150,7 @@ export default function App() {
   useEffect(() => {
     refreshStatus(apiBase);
     loadCourses(apiBase);
+    loadApiPodInfo(apiBase);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -144,6 +166,7 @@ export default function App() {
     showToast("API base set to " + cleaned, "success");
     refreshStatus(cleaned);
     loadCourses(cleaned);
+    loadApiPodInfo(cleaned);
   }
 
   function handleApiBaseKeyDown(e) {
@@ -261,6 +284,7 @@ export default function App() {
       showToast("Could not reach the API to delete the course.", "error");
     }
   }
+
 
   useEffect(() => {
     function onKeyDown(e) {
@@ -435,6 +459,31 @@ export default function App() {
           )}
         </section>
       </main>
+
+      <section className="card api-pod-card" style={{ margin: "0 24px 24px" }}>
+          <h2>API Pod Information</h2>
+          {apiPodError ? (
+            <p role="status">{apiPodError}</p>
+          ) : apiPod ? (
+            <>
+              <p>
+                <strong>Pod Name:</strong> {apiPod.pod_name}
+              </p>
+              <p>
+                <strong>Pod IP:</strong> {apiPod.pod_ip}
+              </p>
+              <button
+                className="btn btn-ghost"
+                type="button"
+                onClick={() => loadApiPodInfo()}
+              >
+                Refresh
+              </button>
+            </>
+          ) : (
+            <p>Loading API pod information…</p>
+          )}
+      </section>
 
       <footer className="footer">
         <span>Smart Education API client</span>
