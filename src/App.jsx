@@ -460,7 +460,7 @@ export default function App() {
         </section>
       </main>
 
-      <section className="card api-pod-card" style={{ margin: "0 24px 24px" }}>
+      <section className="card api-pod-card" style={{ margin: "20px 24px" }}>
           <h2>API Pod Information</h2>
           {apiPodError ? (
             <p role="status">{apiPodError}</p>
